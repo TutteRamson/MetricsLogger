@@ -42,13 +42,13 @@ class MetricsLoggerGrailsPlugin {
     def description = '''\
 Plugin that sends application and business metrics to a configured logger.
 '''
-    def documentation = "TODO:Give a link to the README.md file in GitHub"
+    def documentation = "https://github.com/TutteRamson/MetricsLogger/blob/master/README.md"
     def license = "BSD-new"  // http://opensource.org/licenses/BSD-3-Clause
 
     def organization = [ name: "MasterCard", url: "http://www.mastercard.com/" ]
 
-    def issueManagement = [ system: "GitHub", url: "TODO: Give github issues page link" ]
-    def scm = [ url: "TODO: Git github link" ]
+    def issueManagement = [ system: "GitHub", url: "https://github.com/TutteRamson/MetricsLogger/issues" ]
+    def scm = [ url: "https://github.com/TutteRamson/MetricsLogger" ]
 
     def getWebXmlFilterOrder() { // see http://grails.org/plugin/webxml
         def FilterManager = getClass().getClassLoader().loadClass('grails.plugin.webxml.FilterManager')
