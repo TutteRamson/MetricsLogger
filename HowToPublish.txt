@@ -1,0 +1,17 @@
+How to Publish to a local repository?
+====================================
+Based on: http://grails-plugins.github.io/grails-release/docs/manual/guide/introduction.html
+
+How to publish this plugin to a Maven-compatible(non-public) repository?
+
+1. Have the following configuration values set up in your ~/.grails/settings.groovy file
+
+grails.project.repos.companyRepo.url = "<http://your.company.com/artifactory/plugins-release-local>"
+grails.project.repos.companyRepo.type = "maven"
+grails.project.repos.companyRepo.username = "<valid-user-name>"
+grails.project.repos.companyRepo.password = "<relevant-password>"
+
+
+2. From the root directory of the plugin(the directory that contains<plugin-name>GrailsPlugin.groovy file) run the following command:
+
+grails publish-plugin --repository=companyRepo
