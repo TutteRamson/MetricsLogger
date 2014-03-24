@@ -43,7 +43,7 @@ class MetricsLoggerGrailsPlugin {
 Plugin that sends application and business metrics to a configured logger.
 '''
     def documentation = "https://github.com/TutteRamson/MetricsLogger/blob/master/README.md"
-    def license = "BSD-new"  // http://opensource.org/licenses/BSD-3-Clause
+    def license = "BSD3"  // http://opensource.org/licenses/BSD-3-Clause
 
     def organization = [ name: "MasterCard", url: "http://www.mastercard.com/" ]
 
