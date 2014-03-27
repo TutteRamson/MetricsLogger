@@ -14,4 +14,4 @@ grails.project.repos.companyRepo.password = "<relevant-password>"
 
 2. From the root directory of the plugin(the directory that contains<plugin-name>GrailsPlugin.groovy file) run the following command:
 
-grails publish-plugin --repository=companyRepo
+grails publish-plugin --repository=companyRepo --stacktrace

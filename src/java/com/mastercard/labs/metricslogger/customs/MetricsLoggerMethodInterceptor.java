@@ -37,7 +37,6 @@ import com.mastercard.labs.metricslogger.annotation.LogMetrics;
 public class MetricsLoggerMethodInterceptor implements MethodInterceptor {
     private static String BYPASS_METHOD = "getMetaClass";
 
-    @Override
     public Object invoke(MethodInvocation paramMethodInvocation) throws Throwable {
         // Not interested in calls to getMetaClass().
         String methodName = paramMethodInvocation.getMethod().getName();

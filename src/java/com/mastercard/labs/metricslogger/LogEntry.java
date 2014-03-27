@@ -45,19 +45,19 @@ import com.mastercard.labs.metricslogger.config.AppConfigReader;
 public class LogEntry {
     public static final String LOGGER_NAME = "MetricsLogger";
     private DateTime requestStartTime = new DateTime();
-    private String applicationName = Metadata.getCurrent().getApplicationName();
+    private static final String APPLICATION_NAME = Metadata.getCurrent().getApplicationName();
     private static final String ENTRY_SEPARATOR = "\n---EOE-----------------------------------------------------\n";
     private static final String KEY_VALUE_SEPARATOR = "=";
     private static final int INITIAL_CAPACITY_1K = 1024;
     private static final int INITIAL_CAPACITY_256B = 256;
     private static final char LIST_SEPARATOR = ',';
-    private static List<String> requestHeadersForLogging = AppConfigReader.getRequestHeadersForLogging();
-    private static boolean supportedServletSpecBelow3 = AppConfigReader.getSupportedServletSpecBelow3();
+    private static final List<String> requestHeadersForLogging = AppConfigReader.getRequestHeadersForLogging();
+    private static final boolean supportedServletSpecBelow3 = AppConfigReader.getSupportedServletSpecBelow3();
 
     private Stack<Long> startTimes = new Stack<Long>();
-    private ArrayList<String> timers = new ArrayList<String>();
-    private HashMap<String, String> fields = new HashMap<String, String>();
-    private HashMap<String, Double> numerics = new HashMap<String, Double>();
+    private List<String> timers = new ArrayList<String>();
+    private Map<String, String> fields = new HashMap<String, String>();
+    private Map<String, Double> numerics = new HashMap<String, Double>();
 
     public void startTimer(String timerName) {
         // with the stack based implementation of timers, the timerName is not required.
@@ -81,7 +81,7 @@ public class LogEntry {
     public String toString() {
         StringBuilder output = new StringBuilder(INITIAL_CAPACITY_1K);
         output.append("Time=").append(requestStartTime);
-        output.append("\nApplication=").append(applicationName);
+        output.append("\nApplication=").append(APPLICATION_NAME);
         output.append("\nTimers:").append(StringUtils.join(timers.toArray(), LIST_SEPARATOR));
         output.append("\nFields:").append(toString(fields));
         output.append("\nNumerics:").append(toString(numerics));
@@ -92,7 +92,7 @@ public class LogEntry {
 
     private String getRequestParameters() {
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
-        if (requestAttributes == null || !(requestAttributes instanceof GrailsWebRequest)) {
+        if (!(requestAttributes instanceof GrailsWebRequest)) {
             return null;
         }
         GrailsWebRequest grailsRequest = (GrailsWebRequest)requestAttributes;
@@ -120,7 +120,7 @@ public class LogEntry {
         }
 
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
-        if (requestAttributes == null || !(requestAttributes instanceof GrailsWebRequest)) {
+        if (!(requestAttributes instanceof GrailsWebRequest)) {
             return null;
         }
         GrailsWebRequest grailsRequest = (GrailsWebRequest)requestAttributes;

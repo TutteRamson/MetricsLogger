@@ -81,7 +81,7 @@ public class MetricsLoggerMethodInterceptorTest {
 
     @Test
     public void testInvokeWhenMethodAnnotationIsBlank() throws Throwable {
-        when(mockInvocation.getMethod()).thenReturn(this.getClass().getMethod("emptyAnnotationMethod", null));
+        when(mockInvocation.getMethod()).thenReturn(getClass().getMethod("emptyAnnotationMethod"));
         componentUnderTest.invoke(mockInvocation);
 
         verify(mockInvocation).proceed();
@@ -98,7 +98,7 @@ public class MetricsLoggerMethodInterceptorTest {
 
     @Test
     public void testInvokeWhenMethodAnnotationIsNotBlank() throws Throwable {
-        when(mockInvocation.getMethod()).thenReturn(this.getClass().getMethod("valueSpecifiedAnnotationMethod", null));
+        when(mockInvocation.getMethod()).thenReturn(getClass().getMethod("valueSpecifiedAnnotationMethod"));
         componentUnderTest.invoke(mockInvocation);
 
         verify(mockInvocation).proceed();
