@@ -32,7 +32,7 @@ import org.springframework.transaction.interceptor.TransactionProxyFactoryBean
  * https://github.com/pledbrook/grails-profiler/blob/master/ProfilerGrailsPlugin.groovy
  */
 class MetricsLoggerGrailsPlugin {
-    def version = "1.0"
+    def version = "1.1"
     def grailsVersion = "2.1 > *"
     def loadAfter = ["services", "controllers"]
     def title = "Metrics Logger Plugin"

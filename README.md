@@ -36,7 +36,7 @@ Response:StatusCode=404
     plugins {
         ...
         ...
-        compile ":metrics-logger:1.0"
+        compile ":metrics-logger:1.1"
     }
 ```
 
