@@ -70,7 +70,7 @@ public class MetricsLoggerTest {
         when(mockLocalLogEntry.get()).thenReturn(mockLogEntry);
         MetricsLogger.flush();
         verify(mockLogEntry).flush();
-        verify(mockLocalLogEntry).set(null);
+        verify(mockLocalLogEntry).remove();
     }
 
     @Test

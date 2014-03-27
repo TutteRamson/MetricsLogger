@@ -51,8 +51,8 @@ public class LogEntry {
     private static final int INITIAL_CAPACITY_1K = 1024;
     private static final int INITIAL_CAPACITY_256B = 256;
     private static final char LIST_SEPARATOR = ',';
-    private static final List<String> requestHeadersForLogging = AppConfigReader.getRequestHeadersForLogging();
-    private static final boolean supportedServletSpecBelow3 = AppConfigReader.getSupportedServletSpecBelow3();
+    private static List<String> requestHeadersForLogging = AppConfigReader.getRequestHeadersForLogging(); // it is not declared as final because unit test resets this value
+    private static boolean supportedServletSpecBelow3 = AppConfigReader.getSupportedServletSpecBelow3(); // it is not declared as final because unit test resets this value
 
     private Stack<Long> startTimes = new Stack<Long>();
     private List<String> timers = new ArrayList<String>();
