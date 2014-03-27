@@ -1,40 +1,18 @@
 #https://github.com/github/gitignore/blob/master/Grails.gitignore
 
-# web application files
-/web-app/WEB-INF
+/web-app
 
 # IDE support files
 /.classpath
-/.launch
 /.project
 /.settings
-/*.launch
-/*.tmproj
-/ivy*
 /eclipse
 
-# default HSQL database files for production mode
-/prodDb.*
-
-# general HSQL database files
-*Db.properties
-*Db.script
-
-# logs
-/stacktrace.log
-/test/reports
-/logs
-
-# project release file
-/*.war
+*.log
 
 # plugin release files
 /*.zip
 /plugin.xml
-
-# older plugin install locations
-/plugins
-/web-app/plugins
 
 # "temporary" build files
 /target

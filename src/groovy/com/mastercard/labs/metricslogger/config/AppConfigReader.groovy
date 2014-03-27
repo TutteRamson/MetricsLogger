@@ -24,7 +24,7 @@ import grails.util.Holders
 class AppConfigReader {
 
     static List<String> getRequestHeadersForLogging() {
-        return Holders.config?.grails?.plugin?.metricslogger?.requestHeadersForLogging ?: new ArrayList<String>()
+        return Holders.config?.grails?.plugin?.metricslogger?.requestHeadersForLogging ?: []
     }
 
     static boolean getSupportedServletSpecBelow3() {

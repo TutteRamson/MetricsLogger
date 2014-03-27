@@ -46,7 +46,7 @@ public class MetricsLogger {
             return;
         }
         logEntry.flush();
-        localLogEntry.set(null);
+        localLogEntry.remove();
     }
 
     public static void addField(String fieldName, String fieldValue) {

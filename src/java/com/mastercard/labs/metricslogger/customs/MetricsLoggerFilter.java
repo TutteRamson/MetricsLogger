@@ -30,9 +30,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.mastercard.labs.metricslogger.MetricsLogger;
 
-
 /**
- * Filter that triggers the creation and logging of metrics specific to each request.
+ * Triggers the creation and logging of metrics specific to each request.
  */
 public class MetricsLoggerFilter extends OncePerRequestFilter {
     private static final String REQUEST_TIMER_NAME = "RequestDuration";
@@ -49,5 +48,4 @@ public class MetricsLoggerFilter extends OncePerRequestFilter {
             MetricsLogger.flush();
         }
     }
-
 }

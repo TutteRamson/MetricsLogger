@@ -17,6 +17,8 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import grails.plugin.webxml.FilterManager
+
 import com.mastercard.labs.metricslogger.customs.MetricsLoggerFilter
 import com.mastercard.labs.metricslogger.customs.MetricsLoggerMethodInterceptor
 import com.mastercard.labs.metricslogger.customs.MetricsLoggerHandlerInterceptor
@@ -32,16 +34,11 @@ import org.springframework.transaction.interceptor.TransactionProxyFactoryBean
 class MetricsLoggerGrailsPlugin {
     def version = "1.0"
     def grailsVersion = "2.1 > *"
-    def pluginExcludes = [
-        "grails-app/views/error.gsp"
-    ]
     def loadAfter = ["services", "controllers"]
     def title = "Metrics Logger Plugin"
     def author = "Ramson Tutte"
     def authorEmail = "ramson_tutte@mastercard.com"
-    def description = '''\
-Plugin that sends application and business metrics to a configured logger.
-'''
+    def description = 'Sends application and business metrics to a configured logger'
     def documentation = "https://github.com/TutteRamson/MetricsLogger/blob/master/README.md"
     def license = "BSD3"  // http://opensource.org/licenses/BSD-3-Clause
 
@@ -51,7 +48,6 @@ Plugin that sends application and business metrics to a configured logger.
     def scm = [ url: "https://github.com/TutteRamson/MetricsLogger" ]
 
     def getWebXmlFilterOrder() { // see http://grails.org/plugin/webxml
-        def FilterManager = getClass().getClassLoader().loadClass('grails.plugin.webxml.FilterManager')
         [metricsLoggerFilter: FilterManager.URL_MAPPING_POSITION - 75]
     }
 
@@ -65,7 +61,7 @@ Plugin that sends application and business metrics to a configured logger.
         // Add the MetricsLoggerFilter to the web app.
         def filterDef = xml.'filter'
         filterDef[filterDef.size() - 1] + {
-            'filter' {
+            filter {
                 'filter-name'('metricsLoggerFilter')
                 'filter-class'(MetricsLoggerFilter.name)
             }
@@ -97,60 +93,38 @@ Plugin that sends application and business metrics to a configured logger.
         [annotationHandlerMapping, controllerHandlerMappings]*.interceptors << metricsLoggerHandlerInterceptor
 
         // The existing service bean definitions are replaced with proxy beans
-        if (manager?.hasGrailsPlugin("services")) {
-            for (serviceClass in application.serviceClasses) {
-                String serviceName = serviceClass.propertyName
-                BeanConfiguration beanConfig = springConfig.getBeanConfig(serviceName)
-                if (!beanConfig) {
-                    continue
+        if (!manager?.hasGrailsPlugin("services")) {
+            return
+        }
+
+        for (serviceClass in application.serviceClasses) {
+            String serviceName = serviceClass.propertyName
+            BeanConfiguration beanConfig = springConfig.getBeanConfig(serviceName)
+            if (!beanConfig) {
+                continue
+            }
+
+            // If we're dealing with a TransactionProxyFactoryBean, then we can add the MetricsLoggerMethodInterceptor directly to it.
+            if (beanConfig.beanDefinition.beanClassName == TransactionProxyFactoryBean.name) {
+                if (!beanConfig.hasProperty("preInterceptors")) {
+                    beanConfig.addProperty("preInterceptors", [])
                 }
 
-                // If we're dealing with a TransactionProxyFactoryBean, then we can add the MetricsLoggerMethodInterceptor directly to it.
-                if (beanConfig.beanDefinition.beanClassName == TransactionProxyFactoryBean.name) {
-                    if (!beanConfig.hasProperty("preInterceptors")) {
-                        beanConfig.addProperty("preInterceptors", [])
-                    }
+                delegate."$serviceName".preInterceptors << ref("metricsLoggerMethodInterceptor")
+            }
+            // Otherwise, we need to repace the existing bean definition with a proxy factory bean that calls back to the original service bean.
+            else {
+                // First store the current service bean configuration under a different bean name.
+                springConfig.addBeanConfiguration("${serviceName}MetricsLogged", beanConfig)
 
-                    delegate."$serviceName".preInterceptors << ref("metricsLoggerMethodInterceptor")
-                }
-                // Otherwise, we need to repace the existing bean definition with a proxy factory bean that calls back to the original service bean.
-                else {
-                    // First store the current service bean configuration under a different bean name.
-                    springConfig.addBeanConfiguration("${serviceName}MetricsLogged", beanConfig)
-
-                    // Now create the proxy factory bean and add the method interceptor to it.
-                    "$serviceName"(ProxyFactoryBean) {
-                        // We don't want auto-detection of interfaces, otherwise Spring will just proxy the GroovyObject interface - not what we want!
-                        autodetectInterfaces = false
-                        targetName = "${serviceName}MetricsLogged"
-                        interceptorNames = ["metricsLoggerMethodInterceptor"]
-                    }
+                // Now create the proxy factory bean and add the method interceptor to it.
+                "$serviceName"(ProxyFactoryBean) {
+                    // We don't want auto-detection of interfaces, otherwise Spring will just proxy the GroovyObject interface - not what we want!
+                    autodetectInterfaces = false
+                    targetName = "${serviceName}MetricsLogged"
+                    interceptorNames = ["metricsLoggerMethodInterceptor"]
                 }
             }
         }
-
-    }
-
-    def doWithDynamicMethods = { ctx ->
-        // Implement registering dynamic methods to classes (optional)
-    }
-
-    def doWithApplicationContext = { ctx ->
-        // Implement post initialization spring config (optional)
-    }
-
-    def onChange = { event ->
-        // Implement code that is executed when any artefact that this plugin is
-        // watching is modified and reloaded. The event contains: event.source,
-        // event.application, event.manager, event.ctx, and event.plugin. (optional)
-    }
-
-    def onConfigChange = { event ->
-        // Implement code that is executed when the project configuration changes.
-        // The event is the same as for 'onChange'. (optional)
-    }
-
-    def onShutdown = { event ->
-        // Implement code that is executed when the application shuts down (optional)
     }
 }
